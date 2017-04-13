@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Radium from "radium";
-
+import { observer } from 'mobx-react'
 // Only old-style imports for react-icons seem to work with gulp
 const FaExpand = require("react-icons/lib/fa/expand");
 const FaInfoCircle = require("react-icons/lib/fa/info-circle");
@@ -130,4 +130,4 @@ GraphControls.defaultProps = {
   maxZoom: 1.5
 };
 
-export default Radium(GraphControls);
+export default observer(Radium(GraphControls));

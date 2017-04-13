@@ -2,7 +2,7 @@ import React, {
   Component
 } from "react";
 import * as d3 from "d3";
-
+import { observer } from 'mobx-react';
 import Radium from "radium";
 import GraphControls from "./controls";
 
@@ -281,6 +281,7 @@ class GraphView extends Component {
   }
 
   drawEdge(sourceNode, target, swapErrBack) {
+    console.log('drawedge!')
     const self = this;
 
     const dragEdge = d3.select(this.refs.entities).append("svg:path");
@@ -292,11 +293,13 @@ class GraphView extends Component {
     d3.event.on("drag", dragged).on("end", ended);
 
     function dragged(d) {
+      console.log('dragged')
       dragEdge.attr("d", self.getPathDescriptionStr(sourceNode.x, sourceNode.y, d3.event.x, d3.event.y));
     }
 
     function ended(d) {
       dragEdge.remove();
+      console.log('ended')
 
       let swapEdge = self.state.edgeSwapQueue.shift();
       let hoveredNode = self.state.hoveredNode;
@@ -315,6 +318,7 @@ class GraphView extends Component {
             swapErrBack();
           }
         } else {
+          console.log('ended creating edge')
           self.props.onCreateEdge(sourceNode, hoveredNode);
         }
       } else {
@@ -938,8 +942,8 @@ GraphView.propTypes = {
   style: React.PropTypes.object,
   nodeKey: React.PropTypes.string.isRequired,
   emptyType: React.PropTypes.string.isRequired,
-  nodes: React.PropTypes.array.isRequired,
-  edges: React.PropTypes.array.isRequired,
+  nodes: React.PropTypes.object.isRequired,
+  edges: React.PropTypes.object.isRequired,
   readOnly: React.PropTypes.bool,
   enableFocus: React.PropTypes.bool,
   selected: React.PropTypes.object.isRequired,
@@ -974,4 +978,4 @@ GraphView.defaultProps = {
   canDeleteEdge: () => true,
 };
 
-export default Radium(GraphView);
+export default observer(Radium(GraphView));
