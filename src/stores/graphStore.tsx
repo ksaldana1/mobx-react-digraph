@@ -99,7 +99,7 @@ export class GraphStore {
   @action createNode = async (viewNode: Node): Promise<any> => {
     try {
       await this.statusService.createStatus(viewNode);
-      this.graph.nodes.push(viewNode)
+      this.graph.nodes.push(viewNode);
     } catch (e) {
       console.error(e);
     }
@@ -137,15 +137,20 @@ export class GraphStore {
     }
   }
 
-  @action swapEdges = (sourceViewNode: Node, targetViewNode: Node, viewEdge: Edge): void => {
-    const i = this.getEdgeIndex(viewEdge);
-
-    this.graph.edges[i] = {
-      id: viewEdge.id,
-      source: sourceViewNode.id,
-      target: targetViewNode.id,
-      type: EMPTY_EDGE_TYPE
-    };
+  @action swapEdges = async (sourceViewNode: Node, targetViewNode: Node, viewEdge: Edge): Promise<any> => {
+    try {
+      const updatedEdge = {
+        id: viewEdge.id,
+        source: sourceViewNode.id,
+        target: targetViewNode.id,
+        type: EMPTY_EDGE_TYPE
+      };
+      await this.statusService.swapTransition(updatedEdge);
+      const i = this.getEdgeIndex(viewEdge);
+      this.graph.edges[i] = updatedEdge;
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   @action deleteEdge = async (viewEdge: Edge): Promise<any> => {

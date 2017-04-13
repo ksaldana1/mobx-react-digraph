@@ -53,6 +53,16 @@ export default class StatusService {
     }
   };
 
+  async swapTransition(edge: Edge) {
+    const transition = this.edgeToTransition(edge);
+    try {
+      const response = await axios.post('/api/transitions', transition);
+      return response.data;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   nodeToStatus(node: Node): Status {
     return {
       stubName: node.id,

@@ -13,11 +13,7 @@ const NODE_KEY = 'id'; // Key used to identify nodes
 const EMPTY_TYPE = 'empty'; // Empty node type
 const EMPTY_EDGE_TYPE = 'emptyEdge';
 
-interface GraphProps {
-  store: GraphStore;
-}
-
-@observer class Graph extends React.Component<GraphProps, any> {
+@observer class Graph extends React.Component<{ store: GraphStore }, any> {
   store: GraphStore;
 
   constructor(props) {
