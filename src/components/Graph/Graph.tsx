@@ -59,14 +59,18 @@ interface GraphProps {
   }
 
   onCreateEdge = (sourceViewNode, targetViewNode) => {
-    const viewEdge = {
-      id: v4(),
-      source: sourceViewNode[NODE_KEY],
-      target: targetViewNode[NODE_KEY],
-      type: EMPTY_EDGE_TYPE
-    };
+    if (sourceViewNode.id === targetViewNode.id) {
+      return;
+    }
 
-    this.props.store.createEdge(viewEdge);
+    this.props.store.createEdge(
+      {
+        id: v4(),
+        source: sourceViewNode[NODE_KEY],
+        target: targetViewNode[NODE_KEY],
+        type: EMPTY_EDGE_TYPE
+      }
+    );
   }
 
   onSwapEdge = (sourceViewNode, targetViewNode, viewEdge) => {

@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "webpack; node server.js"
+    "start": "webpack; ts-node server.ts"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +32,7 @@
     "@types/react-dom": "^0.14.23",
     "mobx-react-devtools": "^4.2.11",
     "ts-loader": "^2.0.3",
+    "ts-node": "^3.0.2",
     "typescript": "^2.2.2",
     "webpack": "^2.3.3",
     "webpack-dev-server": "^2.4.2"

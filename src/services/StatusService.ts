@@ -18,12 +18,7 @@ export default class StatusService {
   async createStatus(node: Node) {
     const status = this.nodeToStatus(node);
     try {
-      const data = await axios({
-        method: 'POST',
-        url: 'http://localhost:4000/api/statuses',
-        data: status
-      });
-
+      const data = await axios.post('/api/statuses', status);
       return data;
     } catch (e) {
       console.error('Error creating status', e);
@@ -32,11 +27,7 @@ export default class StatusService {
 
   async deleteStatus(stubName: string) {
     try {
-      const data = await axios({
-        method: 'DELETE',
-        url: `http://localhost:4000/api/statuses/${stubName}`
-      });
-
+      const data = await axios.delete(`/api/statuses/${stubName}`);
       return data;
     } catch (e) {
       console.error('Error deleting status', e);
@@ -46,12 +37,7 @@ export default class StatusService {
   async createTransition(edge: Edge) {
     const transition = this.edgeToTransition(edge);
     try {
-      const data = await axios({
-        method: 'POST',
-        url: 'http://localhost:4000/api/transitions',
-        data: transition
-      });
-
+      const data = await axios.post('/api/transitions', transition);
       return data;
     } catch (e) {
       console.error(e);
@@ -60,11 +46,7 @@ export default class StatusService {
 
   async deleteTransition(edge: Edge) {
     try {
-      const data = await axios({
-        method: 'DELETE',
-        url: `http://localhost:4000/api/transitions/${edge.id}`
-      });
-
+      const data = axios.delete(`/api/transitions/${edge.id}`);
       return data;
     } catch (e) {
       console.error(e);
