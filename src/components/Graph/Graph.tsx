@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import { observer } from 'mobx-react';
 import GraphView from 'react-digraph';
 
-import GraphConfig from './shapes';
+import GraphConfig from './config';
 import { GraphStore, Node, Edge } from '../../stores/graphStore';
 
 const NODE_KEY = 'id'; // Key used to identify nodes
@@ -13,7 +13,7 @@ const NODE_KEY = 'id'; // Key used to identify nodes
 const EMPTY_TYPE = 'empty'; // Empty node type
 const EMPTY_EDGE_TYPE = 'emptyEdge';
 
-@observer class Graph extends React.Component<{ store: GraphStore }, any> {
+@observer class Graph extends React.Component<{ store: GraphStore }, {}> {
   store: GraphStore;
 
   constructor(props) {

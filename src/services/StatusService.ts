@@ -16,8 +16,8 @@ interface Transition {
 
 export default class StatusService {
   async createStatus(node: Node) {
-    const status = this.nodeToStatus(node);
     try {
+      const status = this.nodeToStatus(node);
       const response = await axios.post('/api/statuses', status);
       return response.data;
     } catch (e) {
@@ -35,8 +35,8 @@ export default class StatusService {
   }
 
   async createTransition(edge: Edge) {
-    const transition = this.edgeToTransition(edge);
     try {
+      const transition = this.edgeToTransition(edge);
       const response = await axios.post('/api/transitions', transition);
       return response.data;
     } catch (e) {
@@ -54,8 +54,8 @@ export default class StatusService {
   };
 
   async swapTransition(edge: Edge) {
-    const transition = this.edgeToTransition(edge);
     try {
+      const transition = this.edgeToTransition(edge);
       const response = await axios.post('/api/transitions', transition);
       return response.data;
     } catch (e) {
