@@ -26,6 +26,7 @@ export class GraphStore {
   constructor(statusService) {
     this.statusService = statusService;
   }
+
   // Observable data
   @observable graph = {
     nodes: [
@@ -79,7 +80,7 @@ export class GraphStore {
         type: EMPTY_EDGE_TYPE
       },
       {
-        id: '63f72d80-b395-4223-b546-02caa0ee3618',
+        id: 'a6d40e9f-cc41-4538-a99d-049f937da64c',
         source: 'incident',
         target: 'mitigated',
         type: EMPTY_EDGE_TYPE
@@ -97,6 +98,10 @@ export class GraphStore {
 
   // Actions/Mutations
   @action createNode = async (viewNode: Node): Promise<any> => {
+    // don't create duplicate id nodes
+    if (this.graph.nodes.find(node => node.id === viewNode.id)) {
+      return;
+    }
     try {
       await this.statusService.createStatus(viewNode);
       this.graph.nodes.push(viewNode);
@@ -129,9 +134,12 @@ export class GraphStore {
   }
 
   @action createEdge = async (viewEdge: Edge): Promise<any> => {
+    // if this edge already exists, return early
+    if (this.isDuplicateEdge(viewEdge)) {
+      return;
+    }
     try {
       const data = await this.statusService.createTransition(viewEdge);
-      console.log('pushing edge:' + data);
       this.graph.edges.push(viewEdge);
     } catch (e) {
       console.error(e);
@@ -187,6 +195,17 @@ export class GraphStore {
     return this.graph.nodes.find((node) => {
       return node.id === id;
     });
+  }
+
+  isDuplicateEdge(searchEdge: Edge) {
+    const reverseEdge = {
+      id: searchEdge.id,
+      type: 'emptyEdge',
+      source: searchEdge.target,
+      target: searchEdge.source
+    };
+
+    return (this.getEdgeIndex(searchEdge) !== -1 || this.getEdgeIndex(reverseEdge) !== -1);
   }
 }
 
