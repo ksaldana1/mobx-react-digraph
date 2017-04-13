@@ -2,9 +2,9 @@
   "name": "statusvisualizer",
   "version": "0.0.1",
   "description": "",
-  "main": "index.tsx",
+  "main": "server.js",
   "scripts": {
-    "start": "webpack; node index.js"
+    "start": "webpack; node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +26,8 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "@types/express": "^4.0.35",
+    "@types/node": "^7.0.12",
     "@types/react": "^15.0.21",
     "@types/react-dom": "^0.14.23",
     "mobx-react-devtools": "^4.2.11",

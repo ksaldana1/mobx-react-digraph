@@ -1,5 +1,7 @@
 import { observable, action } from 'mobx';
 
+import StatusService from '../services/StatusService';
+
 const EMPTY_TYPE = 'empty';
 const EMPTY_EDGE_TYPE = 'emptyEdge';
 
@@ -12,12 +14,18 @@ export interface Node {
 }
 
 export interface Edge {
+  id: string;
   source: string;
   target: string;
   type: string;
 }
 
 export class GraphStore {
+  statusService: StatusService;
+
+  constructor(statusService) {
+    this.statusService = statusService;
+  }
   // Observable data
   @observable graph = {
     nodes: [
@@ -59,21 +67,25 @@ export class GraphStore {
     ],
     edges: [
       {
+        id: '8176e41a-117f-4b98-ab30-fda9a0e9e8d4',
         source: 'created',
         target: 'completed',
         type: EMPTY_EDGE_TYPE
       },
       {
+        id: '16151077-7a67-4bc3-97da-3e24220a37f0',
         source: 'created',
         target: 'incident',
         type: EMPTY_EDGE_TYPE
       },
       {
+        id: '63f72d80-b395-4223-b546-02caa0ee3618',
         source: 'incident',
         target: 'mitigated',
         type: EMPTY_EDGE_TYPE
       },
       {
+        id: 'f4e555d8-5788-4749-9a13-6dc8d8ce8f97',
         source: 'mitigated',
         target: 'resolved',
         type: EMPTY_EDGE_TYPE
@@ -85,7 +97,9 @@ export class GraphStore {
 
   // Actions/Mutations
   @action createNode = (viewNode: Node): void => {
-    this.graph.nodes.push(viewNode);
+    this.statusService.createStatus(viewNode)
+      .then(() => this.graph.nodes.push(viewNode))
+      .catch((e) => console.error(e));
   }
 
   @action updateNode = (viewNode: Node) => {
@@ -94,26 +108,33 @@ export class GraphStore {
   }
 
   @action deleteNode = (viewNode: Node): void => {
-    const i = this.getNodeIndex(viewNode);
-    this.graph.nodes.splice(i, 1);
+    this.statusService.deleteStatus(viewNode.id)
+      .then(() => {
+        const i = this.getNodeIndex(viewNode);
+        this.graph.nodes.splice(i, 1);
 
-    // Delete any connected edges
-    const newEdges = this.graph.edges.filter((edge, i) => {
-      return edge.source !== viewNode.id &&
-        edge.target !== viewNode.id;
-    });
-    this.graph.edges = newEdges;
-    this.selected = {};
+        // Delete any connected edges
+        const newEdges = this.graph.edges.filter((edge, i) => {
+          return edge.source !== viewNode.id &&
+            edge.target !== viewNode.id;
+        });
+        this.graph.edges = newEdges;
+        this.selected = {};
+      })
+      .catch((e) => console.error(e));
   }
 
   @action createEdge = (viewEdge: Edge): void => {
-    this.graph.edges.push(viewEdge);
+    this.statusService.createTransition(viewEdge)
+      .then(() => this.graph.edges.push(viewEdge))
+      .catch((e) => console.error(e));
   }
 
   @action swapEdges = (sourceViewNode: Node, targetViewNode: Node, viewEdge: Edge): void => {
     const i = this.getEdgeIndex(viewEdge);
 
     this.graph.edges[i] = {
+      id: viewEdge.id,
       source: sourceViewNode.id,
       target: targetViewNode.id,
       type: EMPTY_EDGE_TYPE
@@ -121,9 +142,13 @@ export class GraphStore {
   }
 
   @action deleteEdge = (viewEdge: Edge): void => {
-    const i = this.getEdgeIndex(viewEdge);
-    this.graph.edges.splice(i, 1);
-    this.selected = {};
+    this.statusService.deleteTransition(viewEdge)
+      .then(() => {
+        const i = this.getEdgeIndex(viewEdge);
+        this.graph.edges.splice(i, 1);
+        this.selected = {};
+      })
+      .catch((e) => console.error(e));
   }
 
   @action updateSelected = (selected: Edge | Node): void => {
@@ -151,5 +176,5 @@ export class GraphStore {
   }
 }
 
-const singleton = new GraphStore();
+const singleton = new GraphStore(new StatusService());
 export default singleton;

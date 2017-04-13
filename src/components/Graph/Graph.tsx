@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { v4 } from 'uuid';
 import { observer } from 'mobx-react';
 import GraphView from 'react-digraph';
 
@@ -59,6 +60,7 @@ interface GraphProps {
 
   onCreateEdge = (sourceViewNode, targetViewNode) => {
     const viewEdge = {
+      id: v4(),
       source: sourceViewNode[NODE_KEY],
       target: targetViewNode[NODE_KEY],
       type: EMPTY_EDGE_TYPE
