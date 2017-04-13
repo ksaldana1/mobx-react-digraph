@@ -96,10 +96,13 @@ export class GraphStore {
   @observable selected = {};
 
   // Actions/Mutations
-  @action createNode = (viewNode: Node): void => {
-    this.statusService.createStatus(viewNode)
-      .then(() => this.graph.nodes.push(viewNode))
-      .catch((e) => console.error(e));
+  @action createNode = async (viewNode: Node): Promise<any> => {
+    try {
+      await this.statusService.createStatus(viewNode);
+      this.graph.nodes.push(viewNode)
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   @action updateNode = (viewNode: Node) => {
@@ -107,27 +110,31 @@ export class GraphStore {
     this.graph.nodes[i] = viewNode;
   }
 
-  @action deleteNode = (viewNode: Node): void => {
-    this.statusService.deleteStatus(viewNode.id)
-      .then(() => {
-        const i = this.getNodeIndex(viewNode);
-        this.graph.nodes.splice(i, 1);
+  @action deleteNode = async (viewNode: Node): Promise<any> => {
+    try {
+      await this.statusService.deleteStatus(viewNode.id);
+      const i = this.getNodeIndex(viewNode);
+      this.graph.nodes.splice(i, 1);
 
-        // Delete any connected edges
-        const newEdges = this.graph.edges.filter((edge, i) => {
-          return edge.source !== viewNode.id &&
-            edge.target !== viewNode.id;
-        });
-        this.graph.edges = newEdges;
-        this.selected = {};
-      })
-      .catch((e) => console.error(e));
+      // Delete any connected edges
+      const newEdges = this.graph.edges.filter((edge, i) => {
+        return edge.source !== viewNode.id &&
+          edge.target !== viewNode.id;
+      });
+      this.graph.edges = newEdges;
+      this.selected = {};
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  @action createEdge = (viewEdge: Edge): void => {
-    this.statusService.createTransition(viewEdge)
-      .then(() => this.graph.edges.push(viewEdge))
-      .catch((e) => console.error(e));
+  @action createEdge = async (viewEdge: Edge): Promise<any> => {
+    try {
+      await this.statusService.createTransition(viewEdge);
+      this.graph.edges.push(viewEdge);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   @action swapEdges = (sourceViewNode: Node, targetViewNode: Node, viewEdge: Edge): void => {
@@ -141,14 +148,15 @@ export class GraphStore {
     };
   }
 
-  @action deleteEdge = (viewEdge: Edge): void => {
-    this.statusService.deleteTransition(viewEdge)
-      .then(() => {
-        const i = this.getEdgeIndex(viewEdge);
-        this.graph.edges.splice(i, 1);
-        this.selected = {};
-      })
-      .catch((e) => console.error(e));
+  @action deleteEdge = async (viewEdge: Edge): Promise<any> => {
+    try {
+      await this.statusService.deleteTransition(viewEdge);
+      const i = this.getEdgeIndex(viewEdge);
+      this.graph.edges.splice(i, 1);
+      this.selected = {};
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   @action updateSelected = (selected: Edge | Node): void => {
