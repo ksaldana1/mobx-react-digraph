@@ -18,8 +18,8 @@ export default class StatusService {
   async createStatus(node: Node) {
     const status = this.nodeToStatus(node);
     try {
-      const data = await axios.post('/api/statuses', status);
-      return data;
+      const response = await axios.post('/api/statuses', status);
+      return response.data;
     } catch (e) {
       console.error('Error creating status', e);
     }
@@ -27,8 +27,8 @@ export default class StatusService {
 
   async deleteStatus(stubName: string) {
     try {
-      const data = await axios.delete(`/api/statuses/${stubName}`);
-      return data;
+      const response = await axios.delete(`/api/statuses/${stubName}`);
+      return response.data;
     } catch (e) {
       console.error('Error deleting status', e);
     }
@@ -37,8 +37,8 @@ export default class StatusService {
   async createTransition(edge: Edge) {
     const transition = this.edgeToTransition(edge);
     try {
-      const data = await axios.post('/api/transitions', transition);
-      return data;
+      const response = await axios.post('/api/transitions', transition);
+      return response.data;
     } catch (e) {
       console.error(e);
     }
@@ -46,8 +46,8 @@ export default class StatusService {
 
   async deleteTransition(edge: Edge) {
     try {
-      const data = axios.delete(`/api/transitions/${edge.id}`);
-      return data;
+      const response = await axios.delete(`/api/transitions/${edge.id}`);
+      return response.data;
     } catch (e) {
       console.error(e);
     }
