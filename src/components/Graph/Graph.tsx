@@ -1,11 +1,9 @@
 import * as React from 'react';
-
-import GraphView from 'react-digraph';
-import { toJS, action } from 'mobx';
-import GraphConfig from './shapes'; // Configures node/edge types
-// import StatusService from '../data/StatusService.js';
 import { observer } from 'mobx-react';
-import { GraphStore } from '../../stores/graph';
+import GraphView from 'react-digraph';
+
+import GraphConfig from './shapes';
+import { GraphStore, Node, Edge } from '../../stores/graphStore';
 
 const styles = {
   graph: {
@@ -13,8 +11,6 @@ const styles = {
     width: '100%'
   }
 };
-
-let INCREMENTING_ID = 6;
 
 const NODE_KEY = 'id'; // Key used to identify nodes
 
@@ -27,63 +23,26 @@ const EMPTY_EDGE_TYPE = 'emptyEdge';
 const SPECIAL_EDGE_TYPE = 'specialEdge';
 
 interface GraphProps {
-  graphStore: GraphStore;
+  store: GraphStore;
 }
 
-export class Graph extends React.Component<GraphProps, any> {
+@observer class Graph extends React.Component<GraphProps, any> {
   store: GraphStore;
 
   constructor(props) {
     super(props);
-
-    this.store = this.props.graphStore;
   }
 
-  getNodeIndex(searchNode) {
-    return this.store.graph.nodes.findIndex((node) => {
-      return node[NODE_KEY] === searchNode[NODE_KEY];
-    });
+  getViewNode = (nodeKey: string): Node => {
+    return this.props.store.getNodeByID(nodeKey);
   }
 
-  getEdgeIndex(searchEdge) {
-    return this.store.graph.edges.findIndex((edge) => {
-      return edge.source === searchEdge.source &&
-        edge.target === searchEdge.target;
-    });
+  onSelectNode = (viewNode: Node): void => {
+    this.props.store.updateSelected(viewNode);
   }
 
-  getViewNode = (nodeKey) => {
-    const searchNode = {};
-    searchNode[NODE_KEY] = nodeKey;
-    const i = this.getNodeIndex(searchNode);
-    return this.store.graph.nodes[i];
-  }
-
-  @action onUpdateNode = (viewNode) => {
-    const graph = this.store.graph;
-    const i = this.getNodeIndex(viewNode);
-
-    graph.nodes[i] = viewNode;
-  }
-
-  @action onSelectNode = (viewNode) => {
-    // Deselect events will send Null viewNode
-    this.store.selected = viewNode ? viewNode : {};
-  }
-
-  @action onSelectEdge = (viewEdge) => {
-    this.store.selected = viewEdge;
-  }
-
-  @action onCreateNode = (x, y) => {
+  onCreateNode = (x: number, y: number): void => {
     const statusName = window.prompt('New status name:');
-
-    // const domainStatus = {
-    //   stubName: statusName.toLowerCase(),
-    //   name: statusName,
-    //   isIncident: false,
-    //   isClosed: false
-    // };
 
     const viewNode = {
       id: statusName.toLowerCase(),
@@ -93,43 +52,37 @@ export class Graph extends React.Component<GraphProps, any> {
       y: y
     };
 
-    this.store.createNode(viewNode);
+    this.props.store.createNode(viewNode);
   }
 
-  @action onDeleteNode = (viewNode) => {
-    const graph = this.store.graph;
-    const i = this.getNodeIndex(viewNode);
-    graph.nodes.splice(i, 1);
-
-    // Delete any connected edges
-    const newEdges = graph.edges.filter((edge, i) => {
-      return edge.source !== viewNode[NODE_KEY] &&
-        edge.target !== viewNode[NODE_KEY];
-    });
-
-    graph.edges = newEdges;
-    this.store.selected = {};
+  onUpdateNode = (viewNode: Node): void => {
+    this.props.store.updateNode(viewNode);
   }
 
-  @action onCreateEdge = (sourceViewNode, targetViewNode) => {
+  onDeleteNode = (viewNode: Node): void => {
+    this.props.store.deleteNode(viewNode);
+  }
+
+  onSelectEdge = (viewEdge: Edge): void => {
+    this.props.store.updateSelected(viewEdge);
+  }
+
+  onCreateEdge = (sourceViewNode, targetViewNode) => {
     const viewEdge = {
       source: sourceViewNode[NODE_KEY],
       target: targetViewNode[NODE_KEY],
       type: EMPTY_EDGE_TYPE
     };
 
-    this.store.createEdge(viewEdge);
+    this.props.store.createEdge(viewEdge);
   }
 
-  @action onSwapEdge = (sourceViewNode, targetViewNode, viewEdge) => {
-    this.store.swapEdges(sourceViewNode, targetViewNode, viewEdge);
+  onSwapEdge = (sourceViewNode, targetViewNode, viewEdge) => {
+    this.props.store.swapEdges(sourceViewNode, targetViewNode, viewEdge);
   }
 
-  @action onDeleteEdge = (viewEdge) => {
-    const graph = this.store.graph;
-    const i = this.getEdgeIndex(viewEdge);
-    graph.edges.splice(i, 1);
-    this.store.selected = {};
+  onDeleteEdge = (viewEdge) => {
+    this.props.store.deleteEdge(viewEdge);
   }
 
   render() {
@@ -143,9 +96,9 @@ export class Graph extends React.Component<GraphProps, any> {
         <GraphView ref='GraphView'
           nodeKey={NODE_KEY}
           emptyType={EMPTY_TYPE}
-          nodes={this.store.graph.nodes}
-          edges={this.store.graph.edges}
-          selected={this.store.selected}
+          nodes={this.props.store.graph.nodes}
+          edges={this.props.store.graph.edges}
+          selected={this.props.store.selected}
           nodeTypes={NodeTypes}
           nodeSubtypes={NodeSubtypes}
           edgeTypes={EdgeTypes}
@@ -164,4 +117,4 @@ export class Graph extends React.Component<GraphProps, any> {
   }
 }
 
-export default observer(Graph);
+export default Graph;

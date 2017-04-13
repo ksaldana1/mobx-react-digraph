@@ -1,15 +1,14 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
 
 import Graph from './Graph/Graph';
-import GraphStore from '../stores/graph';
+import GraphStore from '../stores/graphStore';
 
 class App extends React.Component<{}, {}> {
   render() {
     return (
-      <Graph graphStore={GraphStore} />
+      <Graph store={GraphStore} />
     );
   }
 };
 
-export default observer(App);
+export default App;

@@ -18,6 +18,7 @@ export interface Edge {
 }
 
 export class GraphStore {
+  // Observable data
   @observable graph = {
     nodes: [
       {
@@ -82,34 +83,70 @@ export class GraphStore {
 
   @observable selected = {};
 
-  @action createEdge(viewEdge: Edge): void {
-    this.graph.edges.push(viewEdge);
-  }
-
-  @action createNode(viewNode: Node): void {
+  // Actions/Mutations
+  @action createNode = (viewNode: Node): void => {
     this.graph.nodes.push(viewNode);
   }
 
-  @action swapEdges(sourceViewNode: Node, targetViewNode: Node, viewEdge: Edge): void {
+  @action updateNode = (viewNode: Node) => {
+    const i = this.getNodeIndex(viewNode);
+    this.graph.nodes[i] = viewNode;
+  }
+
+  @action deleteNode = (viewNode: Node): void => {
+    const i = this.getNodeIndex(viewNode);
+    this.graph.nodes.splice(i, 1);
+
+    // Delete any connected edges
+    const newEdges = this.graph.edges.filter((edge, i) => {
+      return edge.source !== viewNode.id &&
+        edge.target !== viewNode.id;
+    });
+    this.graph.edges = newEdges;
+    this.selected = {};
+  }
+
+  @action createEdge = (viewEdge: Edge): void => {
+    this.graph.edges.push(viewEdge);
+  }
+
+  @action swapEdges = (sourceViewNode: Node, targetViewNode: Node, viewEdge: Edge): void => {
     const i = this.getEdgeIndex(viewEdge);
-    const edge = this.graph.edges[i];
 
-    edge.source = sourceViewNode['id'];
-    edge.target = targetViewNode['id'];
-    this.graph.edges[i] = edge;
+    this.graph.edges[i] = {
+      source: sourceViewNode.id,
+      target: targetViewNode.id,
+      type: EMPTY_EDGE_TYPE
+    };
   }
 
-  @action updateEdge(edge: Edge): void {
-
+  @action deleteEdge = (viewEdge: Edge): void => {
+    const i = this.getEdgeIndex(viewEdge);
+    this.graph.edges.splice(i, 1);
+    this.selected = {};
   }
-  // @action updateNode(viewNode: Node): void {
 
-  // }
+  @action updateSelected = (selected: Edge | Node): void => {
+    this.selected = selected ? selected : {};
+  }
 
-  getEdgeIndex(searchEdge) {
+  // Helpers
+  getEdgeIndex(searchEdge: Edge) {
     return this.graph.edges.findIndex((edge) => {
       return edge.source === searchEdge.source &&
         edge.target === searchEdge.target;
+    });
+  }
+
+  getNodeIndex(searchNode: Node) {
+    return this.graph.nodes.findIndex((node) => {
+      return node.id === searchNode.id;
+    });
+  }
+
+  getNodeByID(id: string): Node {
+    return this.graph.nodes.find((node) => {
+      return node.id === id;
     });
   }
 }
