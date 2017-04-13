@@ -2,9 +2,6 @@ import * as React from 'react';
 import Radium from 'radium';
 import { observer } from 'mobx-react';
 
-import FaExpand from 'react-icons/lib/fa/expand';
-import FaInfoCircle from 'react-icons/lib/fa/info-circle';
-
 const steps = 100; // Slider steps
 
 function makeStyles(primary) {

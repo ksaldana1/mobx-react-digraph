@@ -5,22 +5,12 @@ import GraphView from 'react-digraph';
 import GraphConfig from './shapes';
 import { GraphStore, Node, Edge } from '../../stores/graphStore';
 
-const styles = {
-  graph: {
-    height: '100%',
-    width: '100%'
-  }
-};
-
 const NODE_KEY = 'id'; // Key used to identify nodes
-
 // These keys are arbitrary (but must match the config)
 // However, GraphView renders text differently for empty types
 // so this has to be passed in if that behavior is desired.
 const EMPTY_TYPE = 'empty'; // Empty node type
-const SPECIAL_TYPE = 'special';
 const EMPTY_EDGE_TYPE = 'emptyEdge';
-const SPECIAL_EDGE_TYPE = 'specialEdge';
 
 interface GraphProps {
   store: GraphStore;
@@ -91,8 +81,7 @@ interface GraphProps {
     const EdgeTypes = GraphConfig.EdgeTypes;
 
     return (
-      <div id='graph' style={styles.graph}>
-
+      <div id='graph' style={{ height: '100%', width: '100%' }}>
         <GraphView ref='GraphView'
           nodeKey={NODE_KEY}
           emptyType={EMPTY_TYPE}
