@@ -1,10 +1,11 @@
 import * as React from 'react';
 
-import GraphView from './view';
+import GraphView from 'react-digraph';
+import { toJS, action } from 'mobx';
 import GraphConfig from './shapes'; // Configures node/edge types
 // import StatusService from '../data/StatusService.js';
 import { observer } from 'mobx-react';
-import GraphStore from '../../stores/graph';
+import { GraphStore } from '../../stores/graph';
 
 const styles = {
   graph: {
@@ -29,8 +30,7 @@ interface GraphProps {
   graphStore: GraphStore;
 }
 
-@observer
-export default class Graph extends React.Component<GraphProps, any> {
+export class Graph extends React.Component<GraphProps, any> {
   store: GraphStore;
 
   constructor(props) {
@@ -59,46 +59,44 @@ export default class Graph extends React.Component<GraphProps, any> {
     return this.store.graph.nodes[i];
   }
 
-  onUpdateNode = (viewNode) => {
+  @action onUpdateNode = (viewNode) => {
     const graph = this.store.graph;
     const i = this.getNodeIndex(viewNode);
 
     graph.nodes[i] = viewNode;
   }
 
-  onSelectNode = (viewNode) => {
+  @action onSelectNode = (viewNode) => {
     // Deselect events will send Null viewNode
     this.store.selected = viewNode ? viewNode : {};
   }
 
-  onSelectEdge = (viewEdge) => {
+  @action onSelectEdge = (viewEdge) => {
     this.store.selected = viewEdge;
   }
 
-  onCreateNode = (x, y) => {
+  @action onCreateNode = (x, y) => {
     const statusName = window.prompt('New status name:');
 
-    const domainStatus = {
-      stubName: statusName.toLowerCase(),
-      name: statusName,
-      isIncident: false,
-      isClosed: false
-    };
-    const graph = this.store.graph;
-    const type = EMPTY_TYPE;
+    // const domainStatus = {
+    //   stubName: statusName.toLowerCase(),
+    //   name: statusName,
+    //   isIncident: false,
+    //   isClosed: false
+    // };
 
     const viewNode = {
-      id: INCREMENTING_ID++,
+      id: statusName.toLowerCase(),
       title: statusName,
-      type: type,
+      type: EMPTY_TYPE,
       x: x,
       y: y
     };
 
-    graph.nodes.push(viewNode);
+    this.store.createNode(viewNode);
   }
 
-  onDeleteNode = (viewNode) => {
+  @action onDeleteNode = (viewNode) => {
     const graph = this.store.graph;
     const i = this.getNodeIndex(viewNode);
     graph.nodes.splice(i, 1);
@@ -113,7 +111,7 @@ export default class Graph extends React.Component<GraphProps, any> {
     this.store.selected = {};
   }
 
-  onCreateEdge = (sourceViewNode, targetViewNode) => {
+  @action onCreateEdge = (sourceViewNode, targetViewNode) => {
     const viewEdge = {
       source: sourceViewNode[NODE_KEY],
       target: targetViewNode[NODE_KEY],
@@ -123,17 +121,11 @@ export default class Graph extends React.Component<GraphProps, any> {
     this.store.createEdge(viewEdge);
   }
 
-  onSwapEdge = (sourceViewNode, targetViewNode, viewEdge) => {
-    const graph = this.store.graph;
-    const i = this.getEdgeIndex(viewEdge);
-    const edge = graph.edges[i];
-
-    edge.source = sourceViewNode[NODE_KEY];
-    edge.target = targetViewNode[NODE_KEY];
-    graph.edges[i] = edge;
+  @action onSwapEdge = (sourceViewNode, targetViewNode, viewEdge) => {
+    this.store.swapEdges(sourceViewNode, targetViewNode, viewEdge);
   }
 
-  onDeleteEdge = (viewEdge) => {
+  @action onDeleteEdge = (viewEdge) => {
     const graph = this.store.graph;
     const i = this.getEdgeIndex(viewEdge);
     graph.edges.splice(i, 1);
@@ -172,3 +164,4 @@ export default class Graph extends React.Component<GraphProps, any> {
   }
 }
 
+export default observer(Graph);

@@ -53,7 +53,6 @@ function makeStyles(primary) {
 }
 
 
-
 class GraphControls extends Component {
 
   constructor(props) {
@@ -113,7 +112,7 @@ class GraphControls extends Component {
       </div>
     );
   }
-}
+})
 
 GraphControls.propTypes = {
   primary: React.PropTypes.string,
