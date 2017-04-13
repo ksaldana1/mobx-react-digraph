@@ -15,6 +15,16 @@ app.use(bodyParser.json());
 
 app.use(express.static('dist'));
 
+app.get('/api/transitions', async (req, res) => {
+  try {
+    const response = await axios.get('http://localhost:8000/transitions');
+    res.send(response.data);
+  } catch (e) {
+    console.error(e);
+    res.send('error');
+  }
+});
+
 app.post('/api/transitions', async (req, res) => {
   try {
     const response = await axios.post('http://localhost:8000/transitions', req.body);
@@ -29,6 +39,16 @@ app.delete('/api/transitions/:id', async (req, res) => {
   try {
     const response = await axios.delete(`http://localhost:8000/transitions/${req.params.id}`, { data: {} });
     res.send('success!' + response.data);
+  } catch (e) {
+    console.error(e);
+    res.send('error');
+  }
+});
+
+app.get('/api/statuses', async (req, res) => {
+  try {
+    const response = await axios.get('http://localhost:8000/statuses');
+    res.send(response.data);
   } catch (e) {
     console.error(e);
     res.send('error');

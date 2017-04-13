@@ -25,7 +25,15 @@ export class GraphStore {
 
   constructor(statusService) {
     this.statusService = statusService;
+
+    this.setInitialData()
+      .then(() => this.loading = false);
+    // get initial data
+    // convert to graph
+
   }
+
+  @observable loading = true;
 
   // Observable data
   @observable graph = {
@@ -177,7 +185,21 @@ export class GraphStore {
     this.selected = selected ? selected : {};
   }
 
+  @action setGraph = (nodes, edges): void => {
+    this.graph.nodes = nodes;
+    this.graph.edges = edges;
+  }
+
   // Helpers
+  async setInitialData() {
+    try {
+      const [nodes, edges] = await this.statusService.getAlllData();
+      this.setGraph(nodes, edges);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   getEdgeIndex(searchEdge: Edge) {
     return this.graph.edges.findIndex((edge) => {
       return edge.source === searchEdge.source &&

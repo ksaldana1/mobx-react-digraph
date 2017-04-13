@@ -10,9 +10,12 @@ interface Status {
 
 interface Transition {
   id: string;
-  from: Status['stubName'];
-  to: Status['stubName'];
+  from: string;
+  to: string;
 }
+
+const EMPTY_TYPE = 'empty';
+const EMPTY_EDGE_TYPE = 'emptyEdge';
 
 export default class StatusService {
   async createStatus(node: Node) {
@@ -25,6 +28,16 @@ export default class StatusService {
       throw e;
     }
   }
+
+  async getAlllData() {
+    try {
+      const [statuses, transitions] = await Promise.all([axios.get('/api/statuses'), axios.get('/api/transitions')])
+      return [statuses.data.map(this.statusToNode), transitions.data.map(this.transitionToEdge)];
+    } catch (e) {
+      console.error('Error seeding initial data');
+      throw e;
+    }
+  };
 
   async deleteStatus(stubName: string) {
     try {
@@ -68,6 +81,10 @@ export default class StatusService {
     }
   }
 
+  getRandomArbitrary(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
   nodeToStatus(node: Node): Status {
     return {
       stubName: node.id,
@@ -82,6 +99,25 @@ export default class StatusService {
       id: edge.id,
       from: edge.source,
       to: edge.target,
+    };
+  }
+
+  statusToNode = (status: Status): Node => {
+    return {
+      id: status.stubName,
+      title: status.name,
+      x: this.getRandomArbitrary(100, 300),
+      y: this.getRandomArbitrary(50, 500),
+      type: EMPTY_TYPE
+    };
+  }
+
+  transitionToEdge(transition: Transition): Edge {
+    return {
+      id: transition.id,
+      source: transition.from,
+      target: transition.to,
+      type: EMPTY_EDGE_TYPE
     };
   }
 }

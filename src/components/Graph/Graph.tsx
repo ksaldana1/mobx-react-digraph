@@ -79,7 +79,9 @@ const EMPTY_EDGE_TYPE = 'emptyEdge';
     const NodeTypes = GraphConfig.NodeTypes;
     const NodeSubtypes = GraphConfig.NodeSubtypes;
     const EdgeTypes = GraphConfig.EdgeTypes;
-
+    if (this.props.store.loading) {
+      return <div>Loading</div>
+    }
     return (
       <div id='graph' style={{ height: '100%', width: '100%' }}>
         <GraphView ref='GraphView'
