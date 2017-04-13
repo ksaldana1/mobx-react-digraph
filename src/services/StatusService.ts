@@ -22,6 +22,7 @@ export default class StatusService {
       return response.data;
     } catch (e) {
       console.error('Error creating status', e);
+      throw e;
     }
   }
 
@@ -31,6 +32,7 @@ export default class StatusService {
       return response.data;
     } catch (e) {
       console.error('Error deleting status', e);
+      throw e;
     }
   }
 
@@ -40,7 +42,8 @@ export default class StatusService {
       const response = await axios.post('/api/transitions', transition);
       return response.data;
     } catch (e) {
-      console.error(e);
+      console.log(e);
+      throw e;
     }
   };
 
@@ -50,6 +53,7 @@ export default class StatusService {
       return response.data;
     } catch (e) {
       console.error(e);
+      throw e;
     }
   };
 
@@ -60,6 +64,7 @@ export default class StatusService {
       return response.data;
     } catch (e) {
       console.error(e);
+      throw e;
     }
   }
 

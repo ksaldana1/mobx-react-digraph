@@ -130,7 +130,8 @@ export class GraphStore {
 
   @action createEdge = async (viewEdge: Edge): Promise<any> => {
     try {
-      await this.statusService.createTransition(viewEdge);
+      const data = await this.statusService.createTransition(viewEdge);
+      console.log('pushing edge:' + data);
       this.graph.edges.push(viewEdge);
     } catch (e) {
       console.error(e);

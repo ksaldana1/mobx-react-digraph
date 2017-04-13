@@ -6,11 +6,9 @@ import GraphView from 'react-digraph';
 import GraphConfig from './config';
 import { GraphStore, Node, Edge } from '../../stores/graphStore';
 
-const NODE_KEY = 'id'; // Key used to identify nodes
-// These keys are arbitrary (but must match the config)
-// However, GraphView renders text differently for empty types
-// so this has to be passed in if that behavior is desired.
-const EMPTY_TYPE = 'empty'; // Empty node type
+const NODE_KEY = 'id';
+
+const EMPTY_TYPE = 'empty';
 const EMPTY_EDGE_TYPE = 'emptyEdge';
 
 @observer class Graph extends React.Component<{ store: GraphStore }, {}> {
@@ -54,7 +52,7 @@ const EMPTY_EDGE_TYPE = 'emptyEdge';
     this.props.store.updateSelected(viewEdge);
   }
 
-  onCreateEdge = (sourceViewNode, targetViewNode) => {
+  onCreateEdge = (sourceViewNode: Node, targetViewNode: Node) => {
     if (sourceViewNode.id === targetViewNode.id) {
       return;
     }
@@ -69,11 +67,11 @@ const EMPTY_EDGE_TYPE = 'emptyEdge';
     );
   }
 
-  onSwapEdge = (sourceViewNode, targetViewNode, viewEdge) => {
+  onSwapEdge = (sourceViewNode: Node, targetViewNode: Node, viewEdge: Edge) => {
     this.props.store.swapEdges(sourceViewNode, targetViewNode, viewEdge);
   }
 
-  onDeleteEdge = (viewEdge) => {
+  onDeleteEdge = (viewEdge: Edge) => {
     this.props.store.deleteEdge(viewEdge);
   }
 
