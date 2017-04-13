@@ -51,7 +51,7 @@ export default class StatusService {
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   nodeToStatus(node: Node): Status {
     return {
