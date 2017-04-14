@@ -28,6 +28,11 @@ const EMPTY_EDGE_TYPE = 'emptyEdge';
 
   onCreateNode = (x: number, y: number): void => {
     const statusName = window.prompt('New status name:');
+    // empty status name breaks things
+    // ask me how I know
+    if (!statusName) {
+      return;
+    }
 
     const viewNode = {
       id: statusName.toLowerCase(),
@@ -80,7 +85,7 @@ const EMPTY_EDGE_TYPE = 'emptyEdge';
     const NodeSubtypes = GraphConfig.NodeSubtypes;
     const EdgeTypes = GraphConfig.EdgeTypes;
     if (this.props.store.loading) {
-      return <div>Loading</div>
+      return <div>Loading</div>;
     }
     return (
       <div id='graph' style={{ height: '100%', width: '100%' }}>

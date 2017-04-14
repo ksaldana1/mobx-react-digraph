@@ -28,14 +28,10 @@ export class GraphStore {
 
     this.setInitialData()
       .then(() => this.loading = false);
-    // get initial data
-    // convert to graph
-
   }
 
   @observable loading = true;
 
-  // Observable data
   @observable graph = {
     nodes: [
       {
@@ -147,7 +143,7 @@ export class GraphStore {
       return;
     }
     try {
-      const data = await this.statusService.createTransition(viewEdge);
+      await this.statusService.createTransition(viewEdge);
       this.graph.edges.push(viewEdge);
     } catch (e) {
       console.error(e);
@@ -193,7 +189,7 @@ export class GraphStore {
   // Helpers
   async setInitialData() {
     try {
-      const [nodes, edges] = await this.statusService.getAlllData();
+      const [nodes, edges] = await this.statusService.getAllData();
       this.setGraph(nodes, edges);
     } catch (e) {
       console.error(e);

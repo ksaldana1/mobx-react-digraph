@@ -29,9 +29,9 @@ export default class StatusService {
     }
   }
 
-  async getAlllData() {
+  async getAllData() {
     try {
-      const [statuses, transitions] = await Promise.all([axios.get('/api/statuses'), axios.get('/api/transitions')])
+      const [statuses, transitions] = await Promise.all([axios.get('/api/statuses'), axios.get('/api/transitions')]);
       return [statuses.data.map(this.statusToNode), transitions.data.map(this.transitionToEdge)];
     } catch (e) {
       console.error('Error seeding initial data');

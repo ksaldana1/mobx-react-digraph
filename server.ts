@@ -1,7 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
-// import cors from 'cors';
 import axios from 'axios';
 
 const app = express();
@@ -11,8 +10,6 @@ app.listen(app.get('port'), () => console.log(`Listening on port ${app.get('port
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-// app.use(cors());
-
 app.use(express.static('dist'));
 
 app.get('/api/transitions', async (req, res) => {
