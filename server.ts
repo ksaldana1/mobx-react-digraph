@@ -12,9 +12,11 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(express.static('dist'));
 
+const baseURL = 'http://localhost:8000';
+
 app.get('/api/transitions', async (req, res) => {
   try {
-    const response = await axios.get('http://localhost:8000/transitions');
+    const response = await axios.get(`${baseURL}/transitions`);
     res.send(response.data);
   } catch (e) {
     console.error(e);
@@ -24,7 +26,7 @@ app.get('/api/transitions', async (req, res) => {
 
 app.post('/api/transitions', async (req, res) => {
   try {
-    const response = await axios.post('http://localhost:8000/transitions', req.body);
+    const response = await axios.post(`${baseURL}/transitions`, req.body);
     res.send('success!' + response.data);
   } catch (e) {
     console.error(e);
@@ -34,7 +36,7 @@ app.post('/api/transitions', async (req, res) => {
 
 app.delete('/api/transitions/:id', async (req, res) => {
   try {
-    const response = await axios.delete(`http://localhost:8000/transitions/${req.params.id}`, { data: {} });
+    const response = await axios.delete(`${baseURL}/transitions/${req.params.id}`, { data: {} });
     res.send('success!' + response.data);
   } catch (e) {
     console.error(e);
@@ -44,7 +46,7 @@ app.delete('/api/transitions/:id', async (req, res) => {
 
 app.get('/api/statuses', async (req, res) => {
   try {
-    const response = await axios.get('http://localhost:8000/statuses');
+    const response = await axios.get(`${baseURL}/statuses`);
     res.send(response.data);
   } catch (e) {
     console.error(e);
@@ -54,7 +56,7 @@ app.get('/api/statuses', async (req, res) => {
 
 app.post('/api/statuses', async (req, res) => {
   try {
-    const response = await axios.post('http://localhost:8000/statuses', req.body);
+    const response = await axios.post(`${baseURL}/statuses`, req.body);
     res.send(response.data);
   } catch (e) {
     console.error(e);
@@ -64,7 +66,7 @@ app.post('/api/statuses', async (req, res) => {
 
 app.delete('/api/statuses/:stubName', async (req, res) => {
   try {
-    const response = await axios.delete(`http://localhost:8000/statuses/${req.params.stubName}`, { data: {} });
+    const response = await axios.delete(`${baseURL}/statuses/${req.params.stubName}`, { data: {} });
     res.send('success' + response.data);
   } catch (e) {
     console.error(e);
